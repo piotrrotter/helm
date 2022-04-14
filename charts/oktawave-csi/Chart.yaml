@@ -1,0 +1,6 @@
+apiVersion: v2
+name: oktawave-csi
+description: Chart for oktawave CSI
+type: application
+version: 0.1.0
+appVersion: "t14"

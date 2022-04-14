@@ -1,0 +1,96 @@
+---
+kind: DaemonSet
+apiVersion: apps/v1
+metadata:
+  name: {{ include "oktawave-csi.fullname" . }}-node
+spec:
+  selector:
+    matchLabels:
+      app: {{ include "oktawave-csi.fullname" . }}-node
+  template:
+    metadata:
+      labels:
+        app: {{ include "oktawave-csi.fullname" . }}-node
+        role: csi
+    spec:
+      serviceAccount: {{ include "oktawave-csi.fullname" . }}-node
+      hostNetwork: true
+      containers:
+        - name: csi-node-driver-registrar
+          image: {{ .Values.registrar.image.repository }}:{{ .Values.registrar.image.tag }}
+          args:
+            - "--v=5"
+            - "--csi-address=$(ADDRESS)"
+            - "--kubelet-registration-path=$(DRIVER_REG_SOCK_PATH)"
+          lifecycle:
+            preStop:
+              exec:
+                command: ["/bin/sh", "-c", "rm -rf /registration/csi.oktawave.com /registration/csi.oktawave.com-reg.sock"]
+          env:
+            - name: ADDRESS
+              value: /csi/csi.sock
+            - name: DRIVER_REG_SOCK_PATH
+              value: /var/lib/kubelet/plugins/csi.oktawave.com/csi.sock
+            - name: KUBE_NODE_NAME
+              valueFrom:
+                fieldRef:
+                  fieldPath: spec.nodeName
+          volumeMounts:
+            - name: plugin-dir
+              mountPath: /csi/
+            - name: registration-dir
+              mountPath: /registration/
+        - name: csi-plugin
+          image: {{ .Values.csi.image.repository }}:{{ .Values.csi.image.tag }}
+          args:
+            - --endpoint=$(CSI_ENDPOINT)
+            - --clusterName=$(CLUSTER_NAME)
+            - --token=$(ACCESS_TOKEN)
+            - --credentials=$(ACCESS_CREDENTIALS)
+            - --skipTLS=true
+            - --nodeIdFile=/hostId/instance_id
+          command: ["/usr/local/bin/csi-oktawave"]
+          envFrom:
+          - secretRef:
+              name: {{ include "oktawave-csi.fullname" . }}
+          env:
+            - name: CSI_ENDPOINT
+              value: unix:///csi/csi.sock
+            - name: ACCESS_TOKEN
+              value: "OBSOLETE"
+          imagePullPolicy: "Always"
+          securityContext:
+            privileged: true
+            capabilities:
+              add: ["SYS_ADMIN"]
+            allowPrivilegeEscalation: true
+          volumeMounts:
+            - name: plugin-dir
+              mountPath: /csi
+            - name: pods-mount-dir
+              mountPath: /var/lib/kubelet
+              mountPropagation: "Bidirectional"
+            - name: device-dir
+              mountPath: /dev
+            - name: host-id-dir
+              mountPath: /hostId
+      volumes:
+        - name: registration-dir
+          hostPath:
+            path: /var/lib/kubelet/plugins_registry/
+            type: DirectoryOrCreate
+        - name: plugin-dir
+          hostPath:
+            path: /var/lib/kubelet/plugins/csi.oktawave.com
+            type: DirectoryOrCreate
+        - name: pods-mount-dir
+          hostPath:
+            path: /var/lib/kubelet
+            type: Directory
+        - name: device-dir
+          hostPath:
+            path: /dev
+        - name: host-id-dir
+          hostPath:
+            path: /etc/kubernetes
+            type: Directory
