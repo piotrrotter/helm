@@ -2,5 +2,5 @@ apiVersion: v2
 name: oktawave-csi
 description: Chart for oktawave CSI
 type: application
-version: 0.1.2
-appVersion: "t17"
+version: 0.1.3
+appVersion: "t18"

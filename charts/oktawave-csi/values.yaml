@@ -13,7 +13,7 @@ oktawaveApiEndpoint: "https://pl1-api.oktawave.com/services"
 csi:
   image:
     repository: owps/csi-oktawave
-    tag: t17
+    tag: t18
 
 registrar:
   image:
