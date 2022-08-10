@@ -49,6 +49,7 @@ spec:
             - --credentials=$(ACCESS_CREDENTIALS)
             - --skipTLS=true
             - --nodeIdFile=/hostId/instance_id
+            - --oktawaveApiEndpoint=$(OKTAWAVE_API_ENDPOINT)
           command: ["/usr/local/bin/csi-oktawave"]
           envFrom:
           - secretRef:

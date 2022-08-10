@@ -65,6 +65,7 @@ spec:
             - --token=$(ACCESS_TOKEN)
             - --credentials=$(ACCESS_CREDENTIALS)
             - --skipTLS=true
+            - --oktawaveApiEndpoint=$(OKTAWAVE_API_ENDPOINT)
           envFrom:
           - secretRef:
               name: {{ include "oktawave-csi.fullname" . }}

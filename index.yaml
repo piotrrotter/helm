@@ -21,4 +21,14 @@ entries:
     urls:
     - https://github.com/piotrrotter/helm/releases/download/oktawave-csi-0.1.1/oktawave-csi-0.1.1.tgz
     version: 0.1.1
-generated: "2022-04-25T10:54:20.562226867+02:00"
+  - apiVersion: v2
+    appVersion: t17
+    created: "2022-08-10T12:06:09.029789546+02:00"
+    description: Chart for oktawave CSI
+    digest: 90497e49e91f271bac1e3a751b796533810f484eb33feff12ea4605d17d35b64
+    name: oktawave-csi
+    type: application
+    urls:
+    - https://github.com/piotrrotter/helm/releases/download/oktawave-csi-0.1.2/oktawave-csi-0.1.2.tgz
+    version: 0.1.2
+generated: "2022-08-10T12:06:09.029196775+02:00"

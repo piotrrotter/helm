@@ -5,10 +5,15 @@
 #clientID: ""
 #clientSecret: ""
 
+# Warszawa
+oktawaveApiEndpoint: "https://pl1-api.oktawave.com/services"
+# Skawina
+# oktawaveApiEndpoint: "https://pl2-api.oktawave.com/services"
+
 csi:
   image:
     repository: owps/csi-oktawave
-    tag: t14
+    tag: t17
 
 registrar:
   image:
